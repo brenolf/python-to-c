@@ -4,6 +4,80 @@ This project is a very simple Java implementation of a compiler for a more simpl
 
 Any doubt about the project, feel free to contact me.
 
+### Adapted grammar
+
+This is the grammar used for the compiler. It is an adaptation of the original python grammar.
+
+```groovy
+file_input: (NEWLINE | stmt)* ENDMARKER
+
+stmt: simple_stmt | compound_stmt
+simple_stmt: small_stmt (';' small_stmt)* [';'] (NEWLINE | ENDMARKER)
+small_stmt: (expr_stmt | print_stmt | flow_stmt)
+
+expr_stmt: targetlist ((augassign testlist) | trailer*)
+augassign: ('=' | '+=' | '-=' | '*=' | '/=' | '%=' | '&=' | '|=' | '^=')
+targetlist: target ("," target)* [","]
+target: NAME
+
+print_stmt: 'print' ( [ test (',' test)* [','] ] | '>>' test [ (',' test)+ [','] ] )
+flow_stmt: break_stmt | continue_stmt | return_stmt 
+break_stmt: 'break'
+continue_stmt: 'continue'
+return_stmt: 'return' [testlist]
+
+compound_stmt: if_stmt | while_stmt | for_stmt | try_stmt | with_stmt | funcdef | classdef
+if_stmt: 'if' test ':' suite ('elif' test ':' suite)* ['else' ':' suite]
+while_stmt: 'while' test ':' suite ['else' ':' suite]
+for_stmt: 'for' exprlist 'in' atom ':' suite ['else' ':' suite] |
+	  		'for' exprlist 'in' 'range' '(' NUMBER ',' NUMBER ')' ':' suite ['else' ':' suite] 
+
+try_stmt: ('try' ':' suite
+		   ((except_clause ':' suite)+
+			['else' ':' suite]
+			['finally' ':' suite] |
+		   'finally' ':' suite))
+with_stmt: 'with' with_item (',' with_item)*  ':' suite
+with_item: test ['as' expr]
+exprlist: expr (',' expr)* [',']
+
+except_clause: 'except' [test [('as' | ',') test]]
+suite: simple_stmt | NEWLINE INDENT stmt+ DEDENT
+
+funcdef: 'def' NAME parameters ':' suite
+parameters: '(' [varargslist] ')'
+varargslist: ((fpdef ['=' test] ',')*
+			  ('*' NAME [',' '**' NAME] | '**' NAME) |
+			  fpdef ['=' test] (',' fpdef ['=' test])* [','])
+fpdef: target | '(' fplist ')'
+fplist: fpdef (',' fpdef)* [',']
+
+classdef: 'class' NAME ['(' ([atom [',' atom]* | [testlist]) ] ')'] ':' suite
+
+test: or_test ['if' or_test 'else' test]
+or_test: and_test ('or' and_test)*
+and_test: not_test ('and' not_test)*
+not_test: 'not' not_test | comparison
+comparison: expr (comp_op expr)*
+comp_op: '<'|'>'|'=='|'>='|'<='|'<>'|'!='|'in'|'not' 'in'|'is'|'is' 'not'
+expr: xor_expr ('|' xor_expr)*
+xor_expr: and_expr ('^' and_expr)*
+and_expr: arith_expr ('&' arith_expr)*
+arith_expr: term (('+'|'-') term)*
+term: factor (('*'|'/'|'%'|'//') factor)*
+factor: ('+'|'-'|'~') factor | power
+power: atom trailer* ['**' factor]
+atom: (/*'(' [yield_expr|testlist_comp] ')' |*/ '[' [listmaker] ']' | '`' testlist1 '`' | NAME | NUMBER | STRING+)
+
+trailer: '(' arglist ')' | '.' NAME
+arglist: (test ',')*
+
+listmaker: test (',' test)* 
+
+testlist: test (',' test)* [',']
+testlist1: test (',' test)*
+```
+
 ### Example
 
 The following python code:
@@ -132,7 +206,7 @@ void imprimeLista(int argInt, char* argStr, double argDbl, char* argByFuncCall, 
 
 ### Development
 
-This project was made for a compiler design course. Therefore, there should not be any reason to maintain this project other than for academic purposes.
+This project was made for a compiler design course. Therefore, there is no reason to maintain this project other than for academic purposes.
 
 ### Keywords
 
