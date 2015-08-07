@@ -204,6 +204,9 @@ void imprimeLista(int argInt, char* argStr, double argDbl, char* argByFuncCall, 
 }
 ```
 
+### Contributions
+This project was made with [Rafael Tomazela](https://github.com/sohakes).
+
 ### Development
 
 This project was made for a compiler design course. Therefore, there is no reason to maintain this project other than for academic purposes.
